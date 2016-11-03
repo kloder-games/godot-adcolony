@@ -41,8 +41,13 @@ The following methods are available:
 # Init AdColony
 # @param string app_id AdColony APP ID
 # @param string zone_id AdColony ZONE ID
+# @param bool reward_confirmation_dialog Confirmation dialog before ads
+# @param bool reward_result_dialog Result dialog after ads
 # @param int instance_id The instance id from Godot (get_instance_ID())
-init(app_id, zone_id, instance_id)
+init(app_id, zone_id, reward_confirmation_dialog, reward_result_dialog, instance_id)
+
+# Callback on Ad reward (after view a rewarded ad)
+_on_adcolony_reward
 
 # Callback for Ad Request Filled (ready for show)
 _on_adcolony_request_filled()

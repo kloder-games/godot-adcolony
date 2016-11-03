@@ -35,7 +35,10 @@ public class GodotAdColony extends Godot.SingletonBase
 	 * @param int instance_id The instance id from Godot (get_instance_ID())
 	 *							for callbacks
 	 */
-	public void init(final String app_id, final String zone_id, final int instance_id)
+	public void init(final String app_id, final String zone_id,
+					final boolean reward_confirmation_dialog,
+					final boolean reward_result_dialog,
+					final int instance_id)
 	{
 		this.app_id = app_id;
 		this.zone_id = zone_id;
@@ -56,7 +59,22 @@ public class GodotAdColony extends Godot.SingletonBase
                 	//.setUserGender( AdColonyUserMetadata.USER_MALE )
 
         		/** Ad specific options to be sent with request */
-        		ad_options = new AdColonyAdOptions().setUserMetadata(metadata);
+        		ad_options = new AdColonyAdOptions()
+					.enableConfirmationDialog(reward_confirmation_dialog)
+					.enableResultsDialog(reward_result_dialog)
+					.setUserMetadata(metadata);
+
+				/** Create and set a reward listener */
+	        	AdColony.setRewardListener( new AdColonyRewardListener()
+	        	{
+	            	@Override
+            		public void onReward(AdColonyReward reward)
+            		{
+                		/** Query reward object for info here */
+						GodotLib.calldeferred(instance_id, "_on_adcolony_reward", new Object[]{ });
+                		Log.d(TAG, "onReward");
+            		}
+	        	});
 
 				/**
 		         * Set up listener for interstitial ad callbacks. You only need to implement the callbacks
@@ -106,7 +124,6 @@ public class GodotAdColony extends Godot.SingletonBase
 
 		Log.d("godot", "AdColony: init");
 	}
-
 
 	/**
 	 * Load Ad
